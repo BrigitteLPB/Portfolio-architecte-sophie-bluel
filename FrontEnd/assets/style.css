@@ -3,6 +3,12 @@
    License: none (public domain)
 */
 
+:root {
+	--primary-color: #b1663c;
+	--secondary-color: #1d6154;
+	--tertiary-color: #FFFEF8;
+}
+
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -52,6 +58,16 @@ body {
 	margin:auto;
 	font-family: 'Work Sans' ;
 	font-size: 14px;
+	background-color: var(--tertiary-color);
+
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+
+	min-height: 100vh;
+}
+body > * {
+	width: 100%;
 }
 header {
 	display: flex;
@@ -68,7 +84,7 @@ h1{
 	font-family: 'Syne';
 	font-size: 22px;
 	font-weight: 800;
-	color: #B1663C
+	color: var(--primary-color)
 }
 
 h1 > span {
@@ -82,7 +98,7 @@ h2{
 	font-family: 'Syne';
 	font-weight: 700;
 	font-size: 30px;
-	color: #1D6154
+	color: var(--secondary-color)
 }
 nav ul {
 	display: flex;
@@ -96,7 +112,7 @@ nav li {
 }
 
 li:hover {
-	color: #B1663C;
+	color: var(--primary-color);
 }
 #introduction {
 	display: flex;
@@ -137,47 +153,9 @@ li:hover {
 	width: 100%;
 
 }
-#contact {
-	width: 50%;
-margin: auto;
-}
-#contact > * {
-	text-align: center;
 
-}
-#contact h2{
-	margin-bottom: 20px;
-}
-#contact form {
-	text-align: left;
-	margin-top:30px;
-	display: flex;
-	flex-direction: column;
-}
-
-#contact input {
-	height: 50px;
-	font-size: 1.2em;
-	border: none;
-	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
-}
-#contact label {
-	margin: 2em 0 1em 0;
-}
-#contact textarea {
-	border: none;
-	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
-}
-
-input[type="submit"]{
-	font-family: 'Syne';
-	font-weight: 700;
-	color: white;
-	background-color: #1D6154;
-	margin : 2em auto ;
-	width: 180px;
-	text-align: center;
-	border-radius: 60px ;
+footer {
+	align-self: flex-end;
 }
 
 footer nav ul {
@@ -186,3 +164,101 @@ footer nav ul {
 	margin: 2em
 }
 
+
+/* New Props */
+.invisible-button, .invisible-button:hover, .invisible-link:active {
+	background: transparent;
+	border: none;
+	font-family: unset;
+}
+
+.invisible-link, .invisible-link:visited {
+	text-decoration: none;
+	color: unset;
+}
+
+.underline-text {
+	text-decoration: underline;
+}
+
+
+/* Form */
+.form {
+	width: 50%;
+	margin: auto;
+}
+.form > * {
+	text-align: center;
+
+}
+.form h2{
+	margin-bottom: 20px;
+}
+.form form {
+	text-align: left;
+	margin-top:30px;
+	display: flex;
+	flex-direction: column;
+}
+
+.form input {
+	height: 50px;
+	font-size: 1.2em;
+	border: none;
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+}
+.form label {
+	margin: 2em 0 1em 0;
+}
+.form textarea {
+	border: none;
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+}
+
+input[type="submit"]{
+	font-family: 'Syne';
+	font-weight: 700;
+	color: white;
+	background-color: var(--secondary-color);
+	margin : 2em auto ;
+	width: 180px;
+	text-align: center;
+	border-radius: 60px ;
+}
+
+.form .form-centered-field {
+	align-self: center;
+}
+
+#login {
+	width: 40%;
+}
+
+#login .error-message {
+	background-color: red;
+	border-radius: 2em;
+
+	text-align: center;
+	color: white;
+
+	display: block;
+
+	opacity: 0;
+	height: 0;
+	padding: 0;
+
+	transition: opacity 0.5s, height 0.5s, padding 0.5s;
+
+}
+
+#login .error-message.transition  {
+	/* opacity: 1; */
+}
+
+#login .show-error {
+	opacity: 1;
+	padding: 10px;
+	height: auto;
+
+	transition: opacity 0.5s, height 0.5s, padding 0.5s;
+}
