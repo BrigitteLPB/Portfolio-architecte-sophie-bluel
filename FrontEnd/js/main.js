@@ -91,10 +91,69 @@ async function get_works_list(category_id){
 	});
 
 	if(response.length != undefined){
-		data = response;
+		if(category_id == undefined || category_id == 'all'){
+			data = response;
+		}else{
+			for(work of response){
+				if(work.categoryId == category_id){
+					data.push(work);
+				}
+			}
+		}
 	}else{
 		connect_show_error("server", null);
 	}
 
 	return data;
+}
+
+async function get_category_list(){
+	data = [{
+		id: "all",
+		name: "Tous",
+		default: true
+	}];
+
+	response = await fetch(`${SERVER_HOST}/categories`, {
+		method: 'GET',
+		headers: {'Content-Type': 'application/json'}
+	}).then(response => response.json()).catch((err) => {
+		// do nothing
+	});
+
+	data = data.concat(response);
+
+	return data;
+}
+
+async function swap_filters(event){
+	new_filter = event.submitter;
+	previous_filter = document.querySelector("#filter-form input[type='submit'].active");
+
+	// updating filter buttons
+	previous_filter.classList.remove("active");
+	previous_filter.classList.add("inactive");
+
+	new_filter.classList.remove("inactive");
+	new_filter.classList.add("active");
+
+
+	works = await get_works_list(new_filter.id.replace('filter-', ''));
+
+	update_works(works);
+}
+
+function update_works(works){
+	figures = document.querySelectorAll(".gallery figure");
+
+	figures.forEach(f => {
+		for(w of works){
+			if(f.id.replace('figure-', '') == w.id){
+				f.classList.remove('hidden');
+				return;
+			}
+		}
+
+		f.classList.add('hidden');
+	});
 }
