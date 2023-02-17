@@ -1,7 +1,9 @@
-function create_component(name){
-	html_component = this[name]();
+async function create_component(name, ...args){
+	html_component = await this[name](...args);
 
-	document.body.appendChild(html_component)
+	if(html_component != null){
+		document.body.appendChild(html_component);
+	}
 }
 
 
@@ -41,4 +43,70 @@ function footer(){
 		</nav>`;
 
 	return html_footer
+}
+
+
+async function portfolio(category_id){
+	html_portfolio = document.getElementById("portfolio");
+
+	html_portfolio.innerHTML = `<h2>Mes Projets</h2>`;
+
+	html_portfolio.appendChild(await filters());
+
+	html_portfolio.innerHTML += `\
+		<div class="gallery"></div>\
+		<p class="error-message" id="server-error-message">Une erreur est survenue. Veillez ressayer.</p>`;
+
+	html_gallery = html_portfolio.getElementsByTagName("div")[0];
+
+	data = await get_works_list(category_id);
+
+	if (data.length != undefined){
+		for(work of data){
+			figure = document.createElement("figure");
+			figure.id = `figure-${work.id}`;
+
+			figure.innerHTML = `\
+				<img src="${work.imageUrl}" alt="${work.title}">\
+				<figcaption>${work.title}</figcaption>`;
+
+			html_gallery.appendChild(figure);
+		}
+	}
+
+	html_portfolio.appendChild(html_gallery);
+
+	// adding filter event
+	filter_form = document.getElementById("filter-form");
+	filter_form.addEventListener("submit", (event)=>{swap_filters(event)}, true);
+
+	return null;
+}
+
+
+async function filters(){
+	filter_form = document.createElement("form");
+
+	filter_form.id = "filter-form";
+	filter_form.classList.add("form");
+	filter_form.method = "dialog";
+
+	categories = await get_category_list();
+
+	for(c of categories){
+		filter_field = document.createElement("input");
+		filter_field.id = `filter-${c.id}`;
+		filter_field.type = "submit";
+		filter_field.value = c.name;
+
+		if(c.default == true){
+			filter_field.classList.add("active");
+		}else{
+			filter_field.classList.add("inactive");
+		}
+
+		filter_form.appendChild(filter_field);
+	}
+
+	return filter_form;
 }
