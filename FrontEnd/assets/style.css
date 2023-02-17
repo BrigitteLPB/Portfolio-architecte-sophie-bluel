@@ -7,6 +7,7 @@
 	--primary-color: #b1663c;
 	--secondary-color: #1d6154;
 	--tertiary-color: #FFFEF8;
+	--error-color: red;
 }
 
 html, body, div, span, applet, object, iframe,
@@ -234,12 +235,15 @@ input[type="submit"]{
 	width: 40%;
 }
 
-#login .error-message {
-	background-color: red;
+.error-message {
+	background-color: var(--error-color);
 	border-radius: 2em;
 
 	text-align: center;
 	color: white;
+
+	max-width: 30em;
+	margin: auto;
 
 	display: block;
 
@@ -251,11 +255,7 @@ input[type="submit"]{
 
 }
 
-#login .error-message.transition  {
-	/* opacity: 1; */
-}
-
-#login .show-error {
+.show-error {
 	opacity: 1;
 	padding: 10px;
 	height: auto;

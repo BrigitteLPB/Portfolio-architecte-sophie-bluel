@@ -1,7 +1,9 @@
-function create_component(name){
-	html_component = this[name]();
+async function create_component(name, ...args){
+	html_component = await this[name](...args);
 
-	document.body.appendChild(html_component)
+	if(html_component != null){
+		document.body.appendChild(html_component);
+	}
 }
 
 
@@ -41,4 +43,35 @@ function footer(){
 		</nav>`;
 
 	return html_footer
+}
+
+
+async function portfolio(category_id){
+	html_portfolio = document.getElementById("portfolio");
+
+	html_portfolio.innerHTML = `\
+	<h2>Mes Projets</h2>\
+	<p class="error-message" id="server-error-message">Une erreur est survenue. Veillez ressayer.</p>\
+	<div class="gallery"></div>`;
+
+	html_gallery = html_portfolio.getElementsByTagName("div")[0];
+
+	data = await get_works_list(category_id);
+
+	if (data.length != undefined){
+		for(work of data){
+			figure = document.createElement("figure");
+			figure.id = work.id;
+
+			figure.innerHTML = `\
+				<img src="${work.imageUrl}" alt="${work.title}">\
+				<figcaption>${work.title}</figcaption>`;
+
+			html_gallery.appendChild(figure);
+		}
+	}
+
+	html_portfolio.appendChild(html_gallery);
+
+	return null;
 }
