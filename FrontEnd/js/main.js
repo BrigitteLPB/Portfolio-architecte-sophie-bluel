@@ -121,7 +121,9 @@ async function get_category_list(){
 		// do nothing
 	});
 
-	data = data.concat(response);
+	if(response != undefined){
+		data = data.concat(response);
+	}
 
 	return data;
 }

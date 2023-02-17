@@ -49,13 +49,13 @@ function footer(){
 async function portfolio(category_id){
 	html_portfolio = document.getElementById("portfolio");
 
-	html_portfolio.innerHTML = `\
-		<h2>Mes Projets</h2>\
-		<p class="error-message" id="server-error-message">Une erreur est survenue. Veillez ressayer.</p>`;
+	html_portfolio.innerHTML = `<h2>Mes Projets</h2>`;
 
 	html_portfolio.appendChild(await filters());
 
-	html_portfolio.innerHTML += `<div class="gallery"></div>`;
+	html_portfolio.innerHTML += `\
+		<div class="gallery"></div>\
+		<p class="error-message" id="server-error-message">Une erreur est survenue. Veillez ressayer.</p>`;
 
 	html_gallery = html_portfolio.getElementsByTagName("div")[0];
 
