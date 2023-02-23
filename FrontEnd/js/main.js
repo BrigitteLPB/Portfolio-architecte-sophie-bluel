@@ -142,20 +142,62 @@ async function swap_filters(event){
 
 	works = await get_works_list(new_filter.id.replace('filter-', ''));
 
-	update_works(works);
+	await update_works(works);
 }
 
-function update_works(works){
-	figures = document.querySelectorAll(".gallery figure");
+function get_current_category(){
+	filter = document.querySelector("#filter-form input[type='submit'].active");
+	if(filter != undefined){
+		return filter.id.replace('filter-', '');
+	}else{
+		return undefined;
+	}
+}
+
+async function update_works(works){
+	figures = Array.from(document.querySelectorAll(".gallery figure"));
 
 	figures.forEach(f => {
-		for(w of works){
-			if(f.id.replace('figure-', '') == w.id){
-				f.classList.remove('hidden');
-				return;
+		f.classList.add('hidden');
+	});
+
+	await works.forEach(async w => {
+		f = figures.find(f => f.id.replace('figure-', '') == w.id.toString());
+
+		if(f == undefined){
+			// no figure loaded in page
+			gallery = document.querySelector("#portfolio .gallery");
+			if(gallery != undefined){
+				f = await create_component(gallery, 'figure', w);
+			}else{
+				throw Error("cound not find #portfolio .gallery");
 			}
 		}
 
-		f.classList.add('hidden');
+		f.classList.remove("hidden");
 	});
+}
+
+async function delete_work(work){
+	if(work == undefined){
+		throw Error("work is undefined");
+	}
+
+	response = await fetch(`${SERVER_HOST}/works/${work.id}`, {
+		method: 'DELETE',
+		headers: {
+			'Content-Type': 'application/json',
+			'Authorization' : `Bearer ${localStorage.getItem('login-token')}`
+		}
+	});
+
+	if(response.status == 401){
+		disconnect();
+	}
+
+	if(response.status == 500){
+		throw Error(`HTTP error	${response.status}: ${response.statusText}`)
+	}
+
+	await update_works(await get_works_list(get_current_category()));
 }

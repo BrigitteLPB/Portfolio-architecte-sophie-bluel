@@ -1,13 +1,19 @@
-async function create_component(name, ...args){
-	html_component = await this[name](...args);
+async function create_component(parent, name, ...args){
+	[html_component, callback] = await this[name](parent, ...args);
 
-	if(html_component != null){
-		document.body.appendChild(html_component);
+	if(html_component != null && parent != null){
+		parent.appendChild(html_component);
 	}
+
+	if(callback != null){
+		callback(parent, ...args);
+	}
+
+	return html_component;
 }
 
 
-function header(){
+function header(parent){
 	function get_login_html(){
 		if(is_connected()){
 			return `<button class="invisible-button" onClick="disconnect()"><li>logout</li></button>`
@@ -29,10 +35,10 @@ function header(){
 			</ul>\
 		</nav>`;
 
-	return html_header;
+	return [html_header];
 }
 
-function footer(){
+function footer(parent){
 	html_footer = document.createElement("footer");
 
 	html_footer.innerHTML = `\
@@ -42,16 +48,17 @@ function footer(){
 			</ul>\
 		</nav>`;
 
-	return html_footer
+	return [html_footer];
 }
 
 
-async function portfolio(category_id){
-	html_portfolio = document.getElementById("portfolio");
+async function portfolio(parent){
+	// html_portfolio = document.getElementById("portfolio");
+	html_portfolio = parent;
 
 	html_portfolio.innerHTML = `<h2>Mes Projets</h2>`;
 
-	html_portfolio.appendChild(await filters());
+	await create_component(html_portfolio, 'filters')
 
 	html_portfolio.innerHTML += `\
 		<div class="gallery"></div>\
@@ -59,32 +66,36 @@ async function portfolio(category_id){
 
 	html_gallery = html_portfolio.getElementsByTagName("div")[0];
 
-	data = await get_works_list(category_id);
+	data = await get_works_list();
 
 	if (data.length != undefined){
 		for(work of data){
-			figure = document.createElement("figure");
-			figure.id = `figure-${work.id}`;
-
-			figure.innerHTML = `\
-				<img src="${work.imageUrl}" alt="${work.title}">\
-				<figcaption>${work.title}</figcaption>`;
-
-			html_gallery.appendChild(figure);
+			// html_gallery.appendChild(figure(work));
+			await create_component(html_gallery, 'figure', work);
 		}
 	}
 
-	html_portfolio.appendChild(html_gallery);
+	// html_portfolio.appendChild(html_gallery);
 
-	// adding filter event
-	filter_form = document.getElementById("filter-form");
-	filter_form.addEventListener("submit", (event)=>{swap_filters(event)}, true);
-
-	return null;
+	return [html_gallery, () => {
+		// adding filter event
+		filter_form = document.getElementById("filter-form");
+		filter_form.addEventListener("submit", (event)=>{swap_filters(event)}, true);
+	}];
 }
 
+function figure(parent, work){
+	f = document.createElement("figure");
+	f.id = `figure-${work.id}`;
 
-async function filters(){
+	f.innerHTML = `\
+		<img src="${work.imageUrl}" alt="${work.title}">\
+		<figcaption>${work.title}</figcaption>`;
+
+	return [f];
+}
+
+async function filters(parent){
 	filter_form = document.createElement("form");
 
 	filter_form.id = "filter-form";
@@ -108,5 +119,5 @@ async function filters(){
 		filter_form.appendChild(filter_field);
 	}
 
-	return filter_form;
+	return [filter_form];
 }
