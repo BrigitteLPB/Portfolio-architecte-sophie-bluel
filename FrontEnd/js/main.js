@@ -3,7 +3,7 @@ const SERVER_HOST = "http://localhost:5678/api"
 
 // LOGIN
 async function connect(event){
-	data = new FormData(event.target)
+	data = new FormData(event.target);
 
 	try {
 		response = await fetch(`${SERVER_HOST}/users/login`, {
@@ -107,12 +107,16 @@ async function get_works_list(category_id){
 	return data;
 }
 
-async function get_category_list(){
-	data = [{
-		id: "all",
-		name: "Tous",
-		default: true
-	}];
+async function get_category_list(add_all_category=true){
+	if(add_all_category){
+		data = [{
+			id: "all",
+			name: "Tous",
+			default: true
+		}];
+	}else{
+		data = [];
+	}
 
 	response = await fetch(`${SERVER_HOST}/categories`, {
 		method: 'GET',
@@ -178,6 +182,42 @@ async function update_works(works){
 	});
 }
 
+async function create_work(event){
+	data = new FormData(event.target);
+
+	// data validation
+	create_category_id = Number(data.get('create-category-id'));
+
+
+	if(create_category_id == NaN){
+		throw Error('could not validate data');
+	}
+
+
+	response = await fetch(`${SERVER_HOST}/works`, {
+		method: 'POST',
+		headers: {
+			'Authorization' : `Bearer ${localStorage.getItem('login-token')}`
+		},
+		body : data
+	});
+
+	if(response.status == 401){
+		disconnect();
+		return;
+	}
+
+	if(response.status != 201){
+		throw Error(`HTTP error	${response.status}: ${response.statusText}`);
+	}
+
+	response_data = await response.json();
+
+	await update_works(await get_works_list(get_current_category()));
+	await create_component(document.getElementById('works-container'), 'edit_figure', response_data);
+	show_modal_view('edit');
+}
+
 async function delete_work(work){
 	if(work == undefined){
 		throw Error("work is undefined");
@@ -186,18 +226,47 @@ async function delete_work(work){
 	response = await fetch(`${SERVER_HOST}/works/${work.id}`, {
 		method: 'DELETE',
 		headers: {
-			'Content-Type': 'application/json',
 			'Authorization' : `Bearer ${localStorage.getItem('login-token')}`
 		}
 	});
 
 	if(response.status == 401){
 		disconnect();
+		return;
 	}
 
-	if(response.status == 500){
-		throw Error(`HTTP error	${response.status}: ${response.statusText}`)
+	if(response.status != 204){
+		throw Error(`HTTP error	${response.status}: ${response.statusText}`);
 	}
 
 	await update_works(await get_works_list(get_current_category()));
+}
+
+/**
+ *
+ * @param {*} view_name edit or create
+ */
+function show_modal_view(view_name){
+	switch (view_name) {
+		case 'edit':
+			document.getElementById('modal-wrapper').show();
+			document.getElementById('modal-edit').classList.remove('hidden');
+			document.getElementById('modal-create').classList.add('hidden');
+			document.getElementById('modal-return-arrow').classList.add('hidden');
+			break;
+
+		case 'create':
+			document.getElementById('modal-wrapper').show();
+			document.getElementById('modal-edit').classList.add('hidden');
+			document.getElementById('modal-create').classList.remove('hidden');
+			document.getElementById('modal-return-arrow').classList.remove('hidden');
+			break;
+
+		case 'none':
+			document.getElementById('modal-wrapper').close();
+			break;
+
+		default:
+			break;
+	}
 }

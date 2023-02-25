@@ -206,7 +206,7 @@ figure.hidden {
 	flex-direction: column;
 }
 
-.form input {
+.form input, .submit-input-like {
 	height: 50px;
 	font-size: 1.2em;
 	border: none;
@@ -220,7 +220,7 @@ figure.hidden {
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 }
 
-input[type="submit"]{
+input[type="submit"], .submit-input-like {
 	font-family: 'Syne';
 	font-weight: 700;
 	color: white;
