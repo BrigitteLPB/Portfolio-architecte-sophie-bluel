@@ -233,5 +233,30 @@ new BaseComponent(htmlManager, "create_modal_view", async (parent, ...args) => {
 	modal_create_wrapper = document.createElement('div');
 	modal_create_wrapper.id = 'modal-create';
 
+	// form
+	modal_create_wrapper.innerHTML = `<h1>Ajouter une photo</h1><form method="dialog"><input id="create-image-field" type="file" name="image" accept="image/png, image/jpeg"><img id="create-image-preview" src="#"/></input><label>Titre</label><input type="text" name="title"><label>Catégorie</label><select name="category"></select><hr><input type="submit" value="valider"></form>`;
+
+	image = modal_create_wrapper.getElementsByTagName('input')[0];
+	image.addEventListener('change', e => {
+		const [file] = document.getElementById('create-image-field').files
+		if (file) {
+			document.getElementById('create-image-preview').src = URL.createObjectURL(file)
+		}
+	});
+
+	select = modal_create_wrapper.getElementsByTagName('select')[0];
+	for(var c of await get_category_list(false)){
+		select.innerHTML += `<option value=${c.id}>${c.name}</option>`;
+	}
+
+	form = modal_create_wrapper.getElementsByTagName('form')[0];
+	form.addEventListener("submit", async e => {
+		try {
+			await create_work(e);
+		} catch (error) {
+
+		}
+	});
+
 	return [modal_create_wrapper];
 });

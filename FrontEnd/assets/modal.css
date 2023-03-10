@@ -31,6 +31,9 @@
 	-ms-overflow-style: none; /* for Internet Explorer, Edge */
     scrollbar-width: none; /* for Firefox */
 
+	min-width: 700px;
+	min-height: 500px;
+
 	max-height: 80%;
 }
 
@@ -53,13 +56,13 @@
 	display: none!important;
 }
 
-#modal #modal-edit {
+#modal #modal-edit, #modal #modal-create {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 }
 
-#modal #modal-edit h1 {
+#modal h1 {
 	font-family: 'Work Sans';
 	font-size: 21px;
 	align-self: center;
@@ -123,4 +126,15 @@
 
 #modal #modal-edit > button {
 	margin: 10px auto;
+}
+
+#modal #modal-create form {
+	display: flex;
+	flex-direction: column;
+	margin: 0 15%;
+}
+
+#modal-create #create-image-preview {
+	max-width: 100%;
+	max-height: 200px;
 }

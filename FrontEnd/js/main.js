@@ -221,13 +221,13 @@ async function create_work(event){
 	}
 
 	if(response.status != 201){
+		show_modal_view('create');
 		throw Error(`HTTP error	${response.status}: ${response.statusText}`);
 	}
 
 	response_data = await response.json();
 
 	await update_works(await get_works_list(get_current_category()));
-	await create_component(document.getElementById('works-container'), 'edit_figure', response_data);
 	show_modal_view('edit');
 }
 
