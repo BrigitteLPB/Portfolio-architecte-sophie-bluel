@@ -234,13 +234,40 @@ new BaseComponent(htmlManager, "create_modal_view", async (parent, ...args) => {
 	modal_create_wrapper.id = 'modal-create';
 
 	// form
-	modal_create_wrapper.innerHTML = `<h1>Ajouter une photo</h1><form method="dialog"><input id="create-image-field" type="file" name="image" accept="image/png, image/jpeg"><img id="create-image-preview" src="#"/></input><label>Titre</label><input type="text" name="title"><label>Catégorie</label><select name="category"></select><hr><input type="submit" value="valider"></form>`;
+	modal_create_wrapper.innerHTML = `\
+		<h1>Ajouter une photo</h1>\
+		<form method="dialog">\
+			<div id="create-image">\
+				<label id="create-image-label" for="create-image-field">\
+					<i class="fa-regular fa-image"></i>
+					<span class="button-label">+ Ajouter une photo</span>\
+					<span>jpg, png : 4mo max</span>\
+				</label>\
+				<input id="create-image-field" type="file" name="image" accept="image/png, image/jpeg" required/>\
+				<img id="create-image-preview" src=""/>\
+			</div>\
+			<div>\
+				<label for="create-title">Titre</label>\
+				<input id="create-title" type="text" name="title" required/>\
+			</div>\
+			<div>\
+				<label for="create-category">Catégorie</label>\
+				<select id="create-category" name="category" default="" required></select>\
+			</div>\
+			<hr>\
+			<input id="create-submit" class="desactivate" type="submit" value="Valider"/>\
+		</form>`;
 
 	image = modal_create_wrapper.getElementsByTagName('input')[0];
 	image.addEventListener('change', e => {
 		const [file] = document.getElementById('create-image-field').files
 		if (file) {
 			document.getElementById('create-image-preview').src = URL.createObjectURL(file)
+			for(e of document.getElementById('create-image').children){
+				if(e.id != "create-image-preview"){
+					e.classList.add('soft-hidden');
+				}
+			}
 		}
 	});
 
@@ -256,6 +283,21 @@ new BaseComponent(htmlManager, "create_modal_view", async (parent, ...args) => {
 		} catch (error) {
 
 		}
+	});
+
+	form.addEventListener("change", async e => {
+		var sumbit_button;
+		for(var input of e.srcElement.form){
+			if(input.value == ""){
+				document.getElementById('create-submit').classList.add('desactivate');
+				return
+			}
+
+			if(input.id == "create-submit"){
+				sumbit_button = input;
+			}
+		}
+		sumbit_button.classList.remove('desactivate');
 	});
 
 	return [modal_create_wrapper];
