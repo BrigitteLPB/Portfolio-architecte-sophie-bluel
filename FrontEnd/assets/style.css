@@ -221,6 +221,7 @@ figure.hidden {
 }
 
 input[type="submit"], .submit-input-like {
+	cursor: pointer;
 	font-family: 'Syne';
 	font-weight: 700;
 	color: white;

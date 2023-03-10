@@ -74,15 +74,11 @@ function disconnect(){
 	location.href = "login.html";
 }
 
-
 function is_connected(){
 	return localStorage.getItem("login-token") != null && localStorage.getItem("userId") != null;
 }
 
-
 async function get_works_list(category_id){
-	data = [];
-
 	response = await fetch(`${SERVER_HOST}/works`, {
 		method: 'GET',
 		headers: {'Content-Type': 'application/json'}
@@ -92,19 +88,14 @@ async function get_works_list(category_id){
 
 	if(response.length != undefined){
 		if(category_id == undefined || category_id == 'all'){
-			data = response;
+			return response
 		}else{
-			for(work of response){
-				if(work.categoryId == category_id){
-					data.push(work);
-				}
-			}
+			return response.filter(w => w.categoryId == category_id);
 		}
 	}else{
 		connect_show_error("server", null);
+		return [];
 	}
-
-	return data;
 }
 
 async function get_category_list(add_all_category=true){
@@ -143,9 +134,7 @@ async function swap_filters(event){
 	new_filter.classList.remove("inactive");
 	new_filter.classList.add("active");
 
-
 	works = await get_works_list(new_filter.id.replace('filter-', ''));
-
 	await update_works(works);
 }
 
@@ -158,28 +147,88 @@ function get_current_category(){
 	}
 }
 
-async function update_works(works){
+function update_works(works){
+	update_figure(works);
+	update_image_container(works);
+}
+
+function update_figure(works){
 	figures = Array.from(document.querySelectorAll(".gallery figure"));
 
 	figures.forEach(f => {
 		f.classList.add('hidden');
 	});
 
-	await works.forEach(async w => {
+	for(w of works){
 		f = figures.find(f => f.id.replace('figure-', '') == w.id.toString());
-
 		if(f == undefined){
-			// no figure loaded in page
 			gallery = document.querySelector("#portfolio .gallery");
 			if(gallery != undefined){
-				f = await create_component(gallery, 'figure', w);
+				f = figure(w);
+				gallery.appendChild(f);
 			}else{
 				throw Error("cound not find #portfolio .gallery");
 			}
 		}
-
 		f.classList.remove("hidden");
+	};
+
+}
+
+function update_image_container(works){
+	modal_figures = Array.from(document.querySelectorAll("#modal .image-container"));
+
+	modal_figures.forEach(m => {
+		m.classList.add('hidden');
+	})
+
+	for(w of works) {
+		m = modal_figures.find(m => m.id.replace('image-container-', '') == w.id.toString());
+		if(m == undefined){
+			modal = document.querySelector("#modal #works-container");
+			if(modal != undefined){
+				m = imageContainer(w);
+				modal.appendChild(m);
+			}else{
+				throw Error("cound not find #modal #works-container");
+			}
+		}
+		m.classList.remove("hidden");
+	};
+}
+
+async function create_work(event){
+	data = new FormData(event.target);
+
+	// data validation
+	create_category_id = Number(data.get('create-category-id'));
+
+	if(create_category_id == NaN){
+		throw Error('could not validate data');
+	}
+
+	response = await fetch(`${SERVER_HOST}/works`, {
+		method: 'POST',
+		headers: {
+			'Authorization' : `Bearer ${localStorage.getItem('login-token')}`
+		},
+		body : data
 	});
+
+	if(response.status == 401){
+		disconnect();
+		return;
+	}
+
+	if(response.status != 201){
+		show_modal_view('create');
+		throw Error(`HTTP error	${response.status}: ${response.statusText}`);
+	}
+
+	response_data = await response.json();
+
+	await update_works(await get_works_list(get_current_category()));
+	show_modal_view('edit');
 }
 
 async function create_work(event){
