@@ -66,6 +66,19 @@ function imageContainer(work){
 //# COMPONENT DEFINED #//
 htmlManager = new HTMLComponentManager();
 
+new BaseComponent(htmlManager, "admin-header", async (parent) => {
+	html_admin_header = document.createElement('div');
+
+	if(is_connected()){
+		html_admin_header.id = "admin-header";
+		html_admin_header.innerHTML = `\
+			<p><i class="fa-solid fa-pen-to-square"></i> Mode édition</p>\
+			<button class="white-button">publier les changements</button>\
+		`;
+	}
+	return [html_admin_header];
+});
+
 new BaseComponent(htmlManager, "header", async (parent) => {
 	function get_login_html(){
 		if(is_connected()){
@@ -104,10 +117,28 @@ new BaseComponent(htmlManager, "footer", async (parent) => {
 	return [html_footer];
 });
 
+new BaseComponent(htmlManager, "edit-intro", async (parent) => {
+	edit_intro = document.createElement('div');
+	edit_intro.id = "edit-button-container";
+
+	if(is_connected()){
+		edit_intro.innerHTML = `\
+			<button class="edit-button"><i class="fa-solid fa-pen-to-square"></i> modifier</button>\
+		`;
+	}
+	return [edit_intro];
+});
+
 new BaseComponent(htmlManager, "portfolio", async (parent) => {
 
 	html_portfolio = parent;
 	html_portfolio.innerHTML = `<h2>Mes Projets</h2>`;
+
+	if(is_connected()){
+		html_portfolio.innerHTML += `\
+			<button class="edit-button" onclick="show_modal_view('edit');"><i class="fa-solid fa-pen-to-square"></i> modifier</button>\
+		`;
+	}
 
 	html_portfolio.appendChild(document.createElement('filters'));
 

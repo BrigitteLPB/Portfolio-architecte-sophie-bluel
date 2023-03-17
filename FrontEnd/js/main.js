@@ -215,6 +215,8 @@ async function create_work(event){
 		body : data
 	});
 
+	console.log(event);
+
 	if(response.status == 401){
 		disconnect();
 		return;
