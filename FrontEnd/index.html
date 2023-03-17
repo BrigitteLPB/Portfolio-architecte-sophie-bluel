@@ -18,6 +18,7 @@
 </head>
 
 <body>
+	<admin-header></admin-header>
 	<header></header>
 	<main>
 		<modal></modal>
@@ -35,6 +36,7 @@
 				<p>En cas de besoin, une équipe pluridisciplinaire peut-être constituée : architecte DPLG,
 					décorateur(trice)</p>
 			</article>
+			<edit-intro></edit-intro>
 		</section>
 		<section id="portfolio">
 			<portfolio></portfolio>
@@ -54,7 +56,6 @@
 		</section>
 	</main>
 	<footer></footer>
-	<script>addEventListener('DOMContentLoaded', async (event) => {await htmlManager.parseDOM(); show_modal_view('create');});</script>
+	<script>addEventListener('DOMContentLoaded', async (event) => {await htmlManager.parseDOM(); show_modal_view('none');});</script>
 </body>
-
 </html>
