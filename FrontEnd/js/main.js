@@ -215,8 +215,6 @@ async function create_work(event){
 		body : data
 	});
 
-	console.log(event);
-
 	if(response.status == 401){
 		disconnect();
 		return;
@@ -230,42 +228,6 @@ async function create_work(event){
 	response_data = await response.json();
 
 	await update_works(await get_works_list(get_current_category()));
-	show_modal_view('edit');
-}
-
-async function create_work(event){
-	data = new FormData(event.target);
-
-	// data validation
-	create_category_id = Number(data.get('create-category-id'));
-
-
-	if(create_category_id == NaN){
-		throw Error('could not validate data');
-	}
-
-
-	response = await fetch(`${SERVER_HOST}/works`, {
-		method: 'POST',
-		headers: {
-			'Authorization' : `Bearer ${localStorage.getItem('login-token')}`
-		},
-		body : data
-	});
-
-	if(response.status == 401){
-		disconnect();
-		return;
-	}
-
-	if(response.status != 201){
-		throw Error(`HTTP error	${response.status}: ${response.statusText}`);
-	}
-
-	response_data = await response.json();
-
-	await update_works(await get_works_list(get_current_category()));
-	await create_component(document.getElementById('works-container'), 'edit_figure', response_data);
 	show_modal_view('edit');
 }
 

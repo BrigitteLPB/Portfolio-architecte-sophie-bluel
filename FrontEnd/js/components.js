@@ -311,8 +311,16 @@ new BaseComponent(htmlManager, "create_modal_view", async (parent, ...args) => {
 	form.addEventListener("submit", async e => {
 		try {
 			await create_work(e);
-		} catch (error) {
 
+			e.target.reset();
+			document.getElementById('create-image-preview').src = "";
+			for(e of document.getElementById('create-image').children){
+				if(e.id != "create-image-preview"){
+					e.classList.remove('soft-hidden');
+				}
+			}
+		} catch (error) {
+			console.log(error);
 		}
 	});
 
