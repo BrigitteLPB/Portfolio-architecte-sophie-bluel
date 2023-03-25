@@ -135,7 +135,7 @@ async function swap_filters(event){
 	new_filter.classList.add("active");
 
 	works = await get_works_list(new_filter.id.replace('filter-', ''));
-	await update_works(works);
+	update_works(works);
 }
 
 function get_current_category(){
@@ -148,11 +148,6 @@ function get_current_category(){
 }
 
 function update_works(works){
-	update_figure(works);
-	update_image_container(works);
-}
-
-function update_figure(works){
 	figures = Array.from(document.querySelectorAll(".gallery figure"));
 
 	figures.forEach(f => {
@@ -172,10 +167,9 @@ function update_figure(works){
 		}
 		f.classList.remove("hidden");
 	};
-
 }
 
-function update_image_container(works){
+function update_modal(works){
 	modal_figures = Array.from(document.querySelectorAll("#modal .image-container"));
 
 	modal_figures.forEach(m => {
@@ -227,7 +221,8 @@ async function create_work(event){
 
 	response_data = await response.json();
 
-	await update_works(await get_works_list(get_current_category()));
+	update_works(await get_works_list(get_current_category()));
+	update_modal(await get_works_list());
 	show_modal_view('edit');
 }
 
@@ -252,7 +247,8 @@ async function delete_work(work){
 		throw Error(`HTTP error	${response.status}: ${response.statusText}`);
 	}
 
-	await update_works(await get_works_list(get_current_category()));
+	update_works(await get_works_list(get_current_category()));
+	update_modal(await get_works_list());
 }
 
 /**

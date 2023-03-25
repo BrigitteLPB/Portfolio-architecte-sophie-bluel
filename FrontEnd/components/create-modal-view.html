@@ -1,0 +1,24 @@
+<div id="modal-create">
+	<h1>Ajouter une photo</h1>
+	<form id="add-work-form" method="dialog">
+		<div id="create-image">
+			<label id="create-image-label" for="create-image-field">
+				<i class="fa-regular fa-image"></i>
+				<span class="button-label">+ Ajouter une photo</span>
+				<span>jpg, png : 4mo max</span>
+			</label>
+			<input id="create-image-field" type="file" name="image" accept="image/png, image/jpeg" required/>
+			<img id="create-image-preview" src=""/>
+		</div>
+		<div>
+			<label for="create-title">Titre</label>
+			<input id="create-title" type="text" name="title" required/>
+		</div>
+		<div>
+			<label for="create-category">Catégorie</label>
+			<select id="create-category" name="category" default="" required>#{1}</select>
+		</div>
+		<hr>
+		<input id="create-submit" class="desactivate" type="submit" value="Valider"/>
+	</form>
+</div>
