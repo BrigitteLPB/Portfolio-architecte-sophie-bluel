@@ -237,6 +237,14 @@ new BaseComponent(htmlManager, "create-modal-view",
 			// submit
 		form.addEventListener('submit', async (e) => {
 			try {
+				console.log(e);
+				for(var input of e.target){
+					if(input.value == ""){
+						connect_show_error("create");
+						e.preventDefault();
+						return false;
+					}
+				}
 				await create_work(e);
 
 				e.target.reset();
@@ -253,7 +261,7 @@ new BaseComponent(htmlManager, "create-modal-view",
 			// button validation
 		form.addEventListener("change", async e => {
 			var sumbit_button;
-			for(var input of e.srcElement.form){
+			for(var input of e.target.form){
 				if(input.value == ""){
 					document.getElementById('create-submit').classList.add('desactivate');
 					return

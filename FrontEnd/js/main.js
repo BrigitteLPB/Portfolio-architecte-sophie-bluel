@@ -33,8 +33,8 @@ function connect_show_error(type, timeout = 2000){
 	switch(type){
 		case "identifiant":
 			console.log("login error");
-			document.getElementById("id-error-message").classList.add("show-error")
-			document.getElementById("id-error-message").classList.add("transition")
+			document.getElementById("id-error-message").classList.add("show-error");
+			document.getElementById("id-error-message").classList.add("transition");
 
 
 			if(timeout != null){
@@ -46,8 +46,8 @@ function connect_show_error(type, timeout = 2000){
 
 		case "server":
 			console.log("server error");
-			document.getElementById("server-error-message").classList.add("show-error")
-			document.getElementById("server-error-message").classList.add("transition")
+			document.getElementById("server-error-message").classList.add("show-error");
+			document.getElementById("server-error-message").classList.add("transition");
 
 			if(timeout != null){
 				setTimeout(() => {
@@ -57,13 +57,26 @@ function connect_show_error(type, timeout = 2000){
 			break;
 
 		case "identifiant-reset":
-			document.getElementById("id-error-message").classList.remove("show-error")
-			document.getElementById("id-error-message").classList.remove("transition")
+			document.getElementById("id-error-message").classList.remove("show-error");
+			document.getElementById("id-error-message").classList.remove("transition");
 			break;
 
 		case "server-reset":
-			document.getElementById("server-error-message").classList.remove("show-error")
-			document.getElementById("server-error-message").classList.remove("transition")
+			document.getElementById("server-error-message").classList.remove("show-error");
+			document.getElementById("server-error-message").classList.remove("transition");
+			break;
+
+		case "create":
+			document.getElementById("create-error-message").classList.add("show-error");
+			if(timeout != null){
+				setTimeout(() => {
+					connect_show_error("create-reset");
+				}, timeout);
+			}
+			break;
+
+		case "create-reset":
+			document.getElementById("create-error-message").classList.remove("show-error");
 			break;
 	}
 }
